@@ -1,0 +1,1180 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prospecta MEI</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='26' height='26' rx='3' fill='%231F5C45'/%3E%3Crect x='7' y='13' width='18' height='6' fill='%23FFE45C'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h12' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+@font-face { font-family: "Atkinson"; src: url("/static/fontes/atkinson-hyperlegible-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Atkinson"; src: url("/static/fontes/atkinson-hyperlegible-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+
+:root {
+  color-scheme: light;
+  --papel: #FBFCFA;
+  --superficie: #FFFFFF;
+  --tinta: #1D2B26;
+  --tinta-suave: #5A6A63;
+  --tinta-fraca: #8A9893;
+  --pauta: #DFE9E3;
+  --pauta-forte: #B7CCBF;
+  --verde: #1F5C45;
+  --verde-escuro: #154232;
+  --verde-claro: #EAF3EE;
+  --marca: #FFE45C;
+  --alerta: #9E2F3A;
+  --raio: 4px;
+  --fonte: "Atkinson", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font: 16px/1.5 var(--fonte);
+  color: var(--tinta);
+  background: var(--papel);
+  font-variant-numeric: tabular-nums;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--verde); }
+:focus-visible { outline: 2px solid var(--verde); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Topo ---------- */
+.topo {
+  display: flex; align-items: center; gap: 24px;
+  padding: 14px 28px;
+  background: var(--superficie);
+  border-bottom: 4px double var(--verde);
+}
+.marca-sistema { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.marca-sistema svg { flex: none; }
+.marca-sistema h1 { font-size: 22px; line-height: 1.1; margin: 0; letter-spacing: -0.01em; }
+.marca-sistema p { margin: 2px 0 0; color: var(--tinta-suave); font-size: 14px; }
+.topo-acoes { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.andamento-topo {
+  display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--tinta-suave);
+  background: none; border: 0; cursor: pointer; padding: 4px 6px;
+}
+.andamento-topo .trilho { width: 120px; }
+
+/* ---------- Botões ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  border-radius: var(--raio); border: 1px solid var(--verde);
+  background: var(--verde); color: #fff; font-weight: 700;
+  padding: 8px 16px; cursor: pointer; text-decoration: none; white-space: nowrap;
+}
+.btn:hover { background: var(--verde-escuro); }
+.btn-sec { background: var(--superficie); color: var(--verde); }
+.btn-sec:hover { background: var(--verde-claro); }
+.btn-texto { background: none; border: 0; color: var(--verde); padding: 6px 4px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.btn[disabled] { opacity: .5; cursor: progress; }
+
+/* ---------- Layout ---------- */
+.layout { display: grid; grid-template-columns: 312px minmax(0, 1fr); min-height: calc(100vh - 78px); }
+.filtros {
+  border-right: 1px solid var(--pauta-forte);
+  background: var(--superficie);
+  padding: 20px 22px 40px;
+  position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto;
+}
+.filtros-cabeca { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.filtros-cabeca h2 { font-size: 18px; margin: 0; }
+.grupo { padding: 14px 0; border-bottom: 1px solid var(--pauta); }
+.grupo:last-of-type { border-bottom: 0; }
+.grupo > label, .grupo > .rotulo { display: block; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.dica { font-size: 13px; color: var(--tinta-suave); margin: 4px 0 0; }
+.campo-texto, select.campo-texto {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--pauta-forte); border-radius: var(--raio); background: var(--superficie);
+}
+.campo-texto:focus { border-color: var(--verde); outline: none; box-shadow: 0 0 0 3px var(--verde-claro); }
+.datas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.datas label { font-size: 13px; color: var(--tinta-suave); }
+.datas input { width: 100%; padding: 6px 8px; border: 1px solid var(--pauta-forte); border-radius: var(--raio); }
+.opcoes { display: grid; gap: 4px; }
+.opcoes label { display: flex; gap: 8px; align-items: center; cursor: pointer; font-size: 15px; }
+.opcoes input { accent-color: var(--verde); width: 16px; height: 16px; }
+.segmentos { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--verde); border-radius: var(--raio); overflow: hidden; }
+.segmentos label { text-align: center; font-size: 14px; padding: 7px 4px; cursor: pointer; border-left: 1px solid var(--verde); }
+.segmentos label:first-child { border-left: 0; }
+.segmentos input { position: absolute; opacity: 0; pointer-events: none; }
+.segmentos label:has(input:checked) { background: var(--verde); color: #fff; font-weight: 700; }
+.segmentos label:has(input:focus-visible) { outline: 2px solid var(--verde); outline-offset: -4px; }
+
+/* ---------- Seletor com etiquetas ---------- */
+.seletor { position: relative; }
+.seletor-caixa {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  border: 1px solid var(--pauta-forte); border-radius: var(--raio); padding: 5px 6px; background: var(--superficie); cursor: text;
+}
+.seletor-caixa:focus-within { border-color: var(--verde); box-shadow: 0 0 0 3px var(--verde-claro); }
+.seletor-caixa input { flex: 1; min-width: 90px; border: 0; outline: 0; padding: 3px 4px; background: transparent; }
+.seletor.desligado .seletor-caixa { background: var(--papel); cursor: not-allowed; }
+.etiqueta {
+  display: inline-flex; align-items: center; gap: 4px; max-width: 100%;
+  background: var(--verde-claro); border: 1px solid var(--pauta-forte); border-radius: 3px;
+  padding: 1px 4px 1px 8px; font-size: 14px;
+}
+.etiqueta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.etiqueta button { border: 0; background: none; cursor: pointer; padding: 0 4px; font-size: 16px; line-height: 1; color: var(--tinta-suave); }
+.etiqueta button:hover { color: var(--alerta); }
+.lista-opcoes {
+  position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 4px);
+  max-height: 300px; overflow-y: auto; margin: 0; padding: 4px 0; list-style: none;
+  background: var(--superficie); border: 1px solid var(--pauta-forte); border-radius: var(--raio);
+  box-shadow: 0 8px 24px rgba(29, 43, 38, .14);
+}
+.lista-opcoes li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 10px; cursor: pointer; font-size: 14px; }
+.lista-opcoes li small { color: var(--tinta-fraca); white-space: nowrap; }
+.lista-opcoes li[aria-selected="true"], .lista-opcoes li:hover { background: var(--verde-claro); }
+.lista-opcoes .sem-opcao { color: var(--tinta-suave); cursor: default; }
+
+/* ---------- Área principal ---------- */
+.principal { padding: 22px 28px 48px; min-width: 0; }
+.atalhos { display: flex; flex-wrap: wrap; gap: 8px; }
+.atalho {
+  border: 1px solid var(--pauta-forte); background: var(--superficie); border-radius: 999px;
+  padding: 6px 14px; cursor: pointer; font-size: 15px;
+}
+.atalho:hover { border-color: var(--verde); }
+.atalho[aria-pressed="true"] { background: var(--tinta); color: #fff; border-color: var(--tinta); }
+.atalho-explica { margin: 10px 0 0; color: var(--tinta-suave); font-size: 15px; min-height: 1.5em; max-width: 72ch; }
+
+.barra-resultado { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin: 22px 0 12px; }
+.contagem { margin: 0; font-size: 18px; }
+.contagem strong { font-size: 30px; letter-spacing: -0.02em; margin-right: 6px; }
+.barra-resultado .direita { margin-left: auto; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.barra-resultado select { padding: 7px 8px; border: 1px solid var(--pauta-forte); border-radius: var(--raio); background: var(--superficie); }
+
+/* Panorama */
+.panorama { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--pauta-forte); border-bottom: 1px solid var(--pauta-forte); margin-bottom: 18px; }
+.panorama section { padding: 12px 18px 14px; border-left: 1px solid var(--pauta); }
+.panorama section:first-child { border-left: 0; padding-left: 0; }
+.panorama h3 { font-size: 15px; margin: 0 0 8px; }
+.barras { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+.barras button {
+  width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center;
+  border: 0; padding: 2px 4px; background: linear-gradient(to right, var(--verde-claro) var(--p), transparent var(--p));
+  text-align: left; cursor: pointer; font-size: 14px; border-radius: 2px;
+}
+.barras button:hover { box-shadow: inset 0 0 0 1px var(--pauta-forte); }
+.barras span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barras small { color: var(--tinta-suave); font-size: 13px; }
+.medidor { display: grid; gap: 10px; font-size: 14px; }
+.medidor div { display: grid; grid-template-columns: 1fr auto; }
+.medidor .trilho { grid-column: 1 / -1; margin-top: 3px; }
+
+/* Tabela no formato de livro-razão */
+.tabela-envolve { overflow-x: auto; position: relative; }
+.tabela-envolve::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--verde);
+  transform: scaleX(0); transform-origin: left; opacity: 0;
+}
+.carregando .tabela-envolve::before { opacity: 1; animation: carrega 1.1s ease-in-out infinite; }
+@keyframes carrega { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.carregando tbody { opacity: .55; }
+table.razao { width: 100%; border-collapse: collapse; min-width: 960px; background: var(--superficie); }
+.razao thead th {
+  text-align: left; font-size: 14px; color: var(--tinta-suave); font-weight: 700;
+  padding: 10px 12px; border-bottom: 4px double var(--verde); white-space: nowrap; background: var(--papel);
+}
+.razao td { padding: 11px 12px; border-bottom: 1px solid var(--pauta); vertical-align: top; font-size: 15px; }
+.razao td:first-child, .razao th:first-child { border-right: 1px solid var(--pauta-forte); }
+.razao tbody tr { cursor: pointer; }
+.razao tbody tr:hover { background: var(--verde-claro); }
+.razao tbody tr.aberta { background: var(--verde-claro); box-shadow: inset 4px 0 0 var(--verde); }
+.c-empresa { width: 30%; }
+.c-empresa .nome { display: block; font-weight: 700; }
+.c-empresa .fantasia { display: block; color: var(--tinta-suave); }
+.c-empresa .cnpj { display: block; font-size: 13px; color: var(--tinta-fraca); margin-top: 2px; }
+.c-atividade { width: 24%; color: var(--tinta-suave); }
+.c-atividade span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.c-local .mun { display: block; font-size: 13px; color: var(--tinta-suave); }
+.c-data { white-space: nowrap; }
+.c-data mark, mark.sinal {
+  display: block; width: fit-content; margin-top: 4px; padding: 0 6px; font-size: 13px; color: var(--tinta);
+  background: var(--marca); border-radius: 2px 6px 3px 7px / 7px 3px 6px 2px;
+}
+.c-contato a, .c-contato .tel { display: flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 15px; }
+.c-contato a { text-decoration: none; }
+.c-contato a:hover { text-decoration: underline; }
+.c-contato .email { max-width: 220px; overflow: hidden; text-overflow: ellipsis; display: block; color: var(--tinta-suave); font-size: 14px; }
+.vazio { color: var(--tinta-fraca); font-size: 14px; }
+.status { display: inline-block; font-size: 13px; padding: 1px 8px; border-radius: 3px; border: 1px solid currentColor; white-space: nowrap; }
+.s-contatado { color: var(--tinta-suave); }
+.s-interessado { color: var(--verde); font-weight: 700; }
+.s-cliente { color: #fff; background: var(--verde); border-color: var(--verde); font-weight: 700; }
+.s-descartado { color: var(--tinta-fraca); text-decoration: line-through; }
+
+.sem-resultado { padding: 48px 12px; text-align: left; max-width: 60ch; }
+.sem-resultado h3 { margin: 0 0 6px; }
+
+.paginacao { display: flex; align-items: center; gap: 14px; justify-content: flex-end; padding: 14px 0; font-size: 15px; }
+
+.rodape { color: var(--tinta-suave); font-size: 13px; margin-top: 28px; max-width: 80ch; }
+
+/* ---------- Ficha cadastral ---------- */
+.fundo-ficha { position: fixed; inset: 0; background: rgba(29, 43, 38, .28); z-index: 30; }
+.ficha {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(600px, 100%); z-index: 31;
+  background: var(--superficie); border-left: 4px double var(--verde);
+  box-shadow: -12px 0 32px rgba(29, 43, 38, .18);
+  display: flex; flex-direction: column;
+  transform: translateX(0); transition: transform .22s ease-out;
+}
+.ficha[hidden] { display: flex !important; transform: translateX(105%); visibility: hidden; transition: transform .2s ease-in, visibility 0s .2s; }
+.ficha-cabeca { display: flex; align-items: flex-start; gap: 12px; padding: 18px 22px 12px; border-bottom: 1px solid var(--pauta); }
+.ficha-cabeca h2 { margin: 0; font-size: 21px; line-height: 1.25; }
+.ficha-cabeca p { margin: 4px 0 0; color: var(--tinta-suave); }
+.fechar { margin-left: auto; border: 0; background: none; font-size: 28px; line-height: 1; cursor: pointer; color: var(--tinta-suave); padding: 0 4px; }
+.ficha-corpo { overflow-y: auto; padding: 16px 22px 28px; }
+.ficha-acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.cartao { display: grid; grid-template-columns: repeat(6, 1fr); border-top: 1px solid var(--tinta-fraca); border-left: 1px solid var(--tinta-fraca); }
+.cartao .c { grid-column: span 6; padding: 5px 10px 7px; border-right: 1px solid var(--tinta-fraca); border-bottom: 1px solid var(--tinta-fraca); min-width: 0; }
+.cartao .s2 { grid-column: span 2; } .cartao .s3 { grid-column: span 3; } .cartao .s4 { grid-column: span 4; } .cartao .s1 { grid-column: span 1; }
+.cartao small { display: block; font-size: 12px; color: var(--tinta-suave); }
+.cartao div > span { display: block; font-size: 15px; overflow-wrap: anywhere; }
+.cartao .titulo-cartao { grid-column: span 6; text-align: center; font-weight: 700; padding: 8px; background: var(--papel); font-size: 15px; }
+.cartao ul { margin: 0; padding-left: 18px; font-size: 14px; }
+.acompanhamento { margin-top: 22px; }
+.acompanhamento h3 { font-size: 17px; margin: 0 0 4px; }
+.status-opcoes { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }
+.status-opcoes button { border: 1px solid var(--pauta-forte); background: var(--superficie); border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: 14px; }
+.status-opcoes button[aria-pressed="true"] { background: var(--tinta); color: #fff; border-color: var(--tinta); }
+.acompanhamento textarea { width: 100%; min-height: 96px; padding: 8px 10px; border: 1px solid var(--pauta-forte); border-radius: var(--raio); resize: vertical; }
+.salvo { color: var(--tinta-suave); font-size: 13px; margin-left: 8px; }
+
+/* ---------- Atualização ---------- */
+.trilho { height: 8px; background: var(--pauta); border-radius: 4px; overflow: hidden; }
+.trilho > i { display: block; height: 100%; width: 0; background: var(--verde); transition: width .4s; }
+dialog { border: 0; border-top: 4px double var(--verde); border-radius: var(--raio); padding: 0; width: min(620px, calc(100% - 32px)); box-shadow: 0 24px 60px rgba(29, 43, 38, .3); }
+dialog::backdrop { background: rgba(29, 43, 38, .35); }
+.dlg { padding: 22px 26px 24px; }
+.dlg h2 { margin: 0 0 8px; font-size: 21px; }
+.dlg p { margin: 0 0 12px; max-width: 64ch; }
+.dlg .acoes { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+.progresso { margin: 14px 0 6px; }
+.progresso .linha { display: flex; justify-content: space-between; gap: 12px; font-size: 15px; margin-bottom: 6px; }
+.progresso .detalhe { font-size: 13px; color: var(--tinta-suave); margin-top: 6px; min-height: 1.4em; }
+.progresso details { margin-top: 10px; font-size: 13px; }
+.progresso pre { max-height: 200px; overflow: auto; background: var(--papel); border: 1px solid var(--pauta); padding: 8px; white-space: pre-wrap; font-size: 12px; }
+.erro, .progresso .detalhe.erro { color: var(--alerta); font-weight: 700; }
+
+/* Primeira execução */
+.boas-vindas { max-width: 720px; margin: 8vh auto; padding: 0 24px; }
+.boas-vindas h2 { font-size: 30px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -0.01em; }
+.boas-vindas p { font-size: 17px; max-width: 62ch; }
+.boas-vindas .passos { margin: 18px 0 24px; padding-left: 22px; }
+.boas-vindas .passos li { margin-bottom: 6px; }
+
+.aviso {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50;
+  background: var(--tinta); color: #fff; padding: 10px 18px; border-radius: var(--raio); font-size: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+.alternar-filtros { display: none; }
+
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; }
+  .filtros { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--pauta-forte); }
+  .filtros.recolhido form, .filtros.recolhido .filtros-cabeca .btn-texto { display: none; }
+  .alternar-filtros { display: inline-flex; }
+  .panorama { grid-template-columns: 1fr; }
+  .panorama section { border-left: 0; padding-left: 0; border-top: 1px solid var(--pauta); }
+  .topo { padding: 12px 16px; flex-wrap: wrap; }
+  .principal { padding: 18px 16px 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="marca-sistema">
+    <svg width="36" height="36" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="3" width="26" height="26" rx="3" fill="#1F5C45"/><rect x="7" y="13" width="18" height="6" fill="#FFE45C"/><path d="M8 10h16M8 16h16M8 22h12" stroke="#fff" stroke-width="2"/></svg>
+    <div>
+      <h1>Prospecta MEI</h1>
+      <p id="resumo-base">Carregando…</p>
+    </div>
+  </div>
+  <div class="topo-acoes">
+    <button class="andamento-topo" id="andamento-topo" hidden title="Ver andamento da atualização">
+      <span id="andamento-texto">Atualizando base</span>
+      <span class="trilho"><i id="andamento-barra"></i></span>
+    </button>
+    <button class="btn btn-sec" id="btn-atualizar">Atualizar base</button>
+  </div>
+</header>
+
+<!-- Primeira execução: base ainda não baixada -->
+<section class="boas-vindas" id="tela-inicial" hidden>
+  <h2>Primeiro, vamos baixar a base de empresas da Receita Federal.</h2>
+  <p>O sistema baixa os dados públicos do CNPJ, separa só os MEIs do seu estado e guarda tudo neste computador. Depois disso, as buscas são instantâneas e funcionam sem internet.</p>
+  <ol class="passos">
+    <li>São cerca de 7 GB de download. Com internet comum, leva de 30 minutos a algumas horas.</li>
+    <li>Você pode deixar rodando e voltar depois; se cair, o download continua de onde parou.</li>
+    <li>A Receita publica uma base nova por mês. Para atualizar, é só clicar em “Atualizar base”.</li>
+  </ol>
+  <button class="btn" id="btn-baixar-inicial">Baixar base agora</button>
+  <div class="progresso" id="progresso-inicial" hidden></div>
+</section>
+
+<div class="layout" id="tela-principal" hidden>
+  <aside class="filtros recolhido" id="painel-filtros" aria-label="Filtros">
+    <div class="filtros-cabeca">
+      <h2>Filtros</h2>
+      <button type="button" class="btn-texto" id="limpar">Limpar filtros</button>
+      <button type="button" class="btn btn-sec alternar-filtros" id="alternar-filtros" aria-expanded="false">Mostrar filtros</button>
+    </div>
+    <form id="form" autocomplete="off" onsubmit="return false">
+      <div class="grupo">
+        <label for="f-texto">Nome ou CNPJ</label>
+        <input class="campo-texto" type="search" id="f-texto" placeholder="Ex.: salão, Maria Silva, 12.345.678">
+      </div>
+      <div class="grupo">
+        <label for="f-municipio-input">Município</label>
+        <div class="seletor" id="sel-municipio"></div>
+        <p class="dica">Deixe vazio para ver o estado inteiro.</p>
+      </div>
+      <div class="grupo">
+        <label for="f-bairro-input">Bairro</label>
+        <div class="seletor" id="sel-bairro"></div>
+      </div>
+      <div class="grupo">
+        <label for="f-cnae-input">Atividade</label>
+        <div class="seletor" id="sel-cnae"></div>
+        <div class="opcoes" style="margin-top:8px">
+          <label><input type="checkbox" id="f-secundario"> Incluir quem exerce como atividade secundária</label>
+        </div>
+      </div>
+      <div class="grupo">
+        <span class="rotulo" id="rot-tipo">Enquadramento</span>
+        <div class="segmentos" role="radiogroup" aria-labelledby="rot-tipo">
+          <label><input type="radio" name="tipo" value="MEI"> MEI</label>
+          <label><input type="radio" name="tipo" value="EX-MEI"> Ex-MEI</label>
+          <label><input type="radio" name="tipo" value=""> Ambos</label>
+        </div>
+        <p class="dica" id="dica-tipo"></p>
+      </div>
+      <div class="grupo">
+        <span class="rotulo">Situação na Receita</span>
+        <div class="opcoes">
+          <label><input type="checkbox" name="situacao" value="2"> Ativa</label>
+          <label><input type="checkbox" name="situacao" value="4"> Inapta <small class="dica" style="margin:0">(com pendências)</small></label>
+          <label><input type="checkbox" name="situacao" value="3"> Suspensa</label>
+        </div>
+      </div>
+      <div class="grupo">
+        <span class="rotulo">Aberta entre</span>
+        <div class="datas">
+          <div><label for="f-aberto-de">De</label><input type="date" id="f-aberto-de"></div>
+          <div><label for="f-aberto-ate">Até</label><input type="date" id="f-aberto-ate"></div>
+        </div>
+      </div>
+      <div class="grupo" id="grupo-desenq">
+        <span class="rotulo">Saiu do MEI entre</span>
+        <div class="datas">
+          <div><label for="f-excl-de">De</label><input type="date" id="f-excl-de"></div>
+          <div><label for="f-excl-ate">Até</label><input type="date" id="f-excl-ate"></div>
+        </div>
+      </div>
+      <div class="grupo">
+        <span class="rotulo">Contato disponível</span>
+        <div class="opcoes">
+          <label><input type="checkbox" name="contato" value="celular"> Tem celular (WhatsApp)</label>
+          <label><input type="checkbox" name="contato" value="telefone"> Tem algum telefone</label>
+          <label><input type="checkbox" name="contato" value="email"> Tem e-mail</label>
+        </div>
+      </div>
+      <div class="grupo">
+        <label for="f-acomp">Seu acompanhamento</label>
+        <select class="campo-texto" id="f-acomp">
+          <option value="">Todas as empresas</option>
+          <option value="nao_contatado">Ainda não contatadas</option>
+          <option value="marcados">Qualquer marcação</option>
+          <option value="contatado">Contatadas</option>
+          <option value="interessado">Interessadas</option>
+          <option value="cliente">Viraram clientes</option>
+          <option value="descartado">Sem interesse</option>
+        </select>
+      </div>
+    </form>
+  </aside>
+
+  <main class="principal" id="principal">
+    <div class="atalhos" id="atalhos" role="group" aria-label="Listas prontas"></div>
+    <p class="atalho-explica" id="atalho-explica"></p>
+
+    <div class="barra-resultado">
+      <p class="contagem" aria-live="polite"><strong id="total">0</strong><span id="total-rotulo">empresas</span></p>
+      <div class="direita">
+        <label class="sr" for="ordem">Ordenar</label>
+        <select id="ordem">
+          <option value="recentes">Abertas mais recentemente</option>
+          <option value="antigos">Abertas há mais tempo</option>
+          <option value="desenquadramento">Saíram do MEI mais recentemente</option>
+          <option value="nome">Nome (A–Z)</option>
+          <option value="bairro">Município e bairro</option>
+        </select>
+        <button class="btn-texto" id="alternar-panorama" aria-expanded="true">Ocultar panorama</button>
+        <button class="btn btn-sec" id="exp-csv">Baixar CSV</button>
+        <button class="btn" id="exp-xlsx">Baixar planilha Excel</button>
+      </div>
+    </div>
+
+    <div class="panorama" id="panorama">
+      <section><h3 id="pan-local-titulo">Onde estão</h3><ul class="barras" id="pan-local"></ul></section>
+      <section><h3>O que fazem</h3><ul class="barras" id="pan-atividade"></ul></section>
+      <section><h3>Como contatar</h3><div class="medidor" id="pan-contato"></div></section>
+    </div>
+
+    <div class="tabela-envolve">
+      <table class="razao">
+        <thead><tr>
+          <th scope="col">Empresa</th><th scope="col">Atividade principal</th><th scope="col">Bairro</th>
+          <th scope="col">Abertura</th><th scope="col">Contato</th><th scope="col">Acompanhamento</th>
+        </tr></thead>
+        <tbody id="linhas"></tbody>
+      </table>
+    </div>
+    <div class="sem-resultado" id="sem-resultado" hidden>
+      <h3>Nenhuma empresa com esses filtros.</h3>
+      <p>Tente tirar um filtro, ampliar o período ou incluir outros bairros.</p>
+    </div>
+    <nav class="paginacao" id="paginacao" aria-label="Páginas"></nav>
+
+    <p class="rodape">Dados públicos do CNPJ, publicados pela Receita Federal. Ao entrar em contato, apresente-se e respeite quem pedir para não receber mensagens. O CPF que aparece no nome do MEI não é guardado pelo sistema.</p>
+  </main>
+</div>
+
+<div class="fundo-ficha" id="fundo-ficha" hidden></div>
+<aside class="ficha" id="ficha" hidden aria-labelledby="ficha-nome" role="dialog">
+  <div class="ficha-cabeca">
+    <div>
+      <h2 id="ficha-nome"></h2>
+      <p id="ficha-sub"></p>
+    </div>
+    <button class="fechar" id="fechar-ficha" aria-label="Fechar ficha">×</button>
+  </div>
+  <div class="ficha-corpo" id="ficha-corpo"></div>
+</aside>
+
+<dialog id="dlg-atualizar">
+  <div class="dlg">
+    <h2>Atualizar base</h2>
+    <p id="dlg-texto"></p>
+    <div class="progresso" id="progresso-dlg" hidden></div>
+    <div class="acoes">
+      <button class="btn btn-sec" id="dlg-fechar">Fechar</button>
+      <button class="btn" id="dlg-iniciar">Buscar base mais recente</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="aviso" id="aviso" role="status" hidden></div>
+
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const fmtNum = (n) => Number(n || 0).toLocaleString("pt-BR");
+const fmtData = (iso) => (iso ? iso.slice(0, 10).split("-").reverse().join("/") : "");
+const semAcento = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase();
+
+const UFS = { AC: "Acre", AL: "Alagoas", AP: "Amapá", AM: "Amazonas", BA: "Bahia", CE: "Ceará", DF: "Distrito Federal", ES: "Espírito Santo", GO: "Goiás", MA: "Maranhão", MT: "Mato Grosso", MS: "Mato Grosso do Sul", MG: "Minas Gerais", PA: "Pará", PB: "Paraíba", PR: "Paraná", PE: "Pernambuco", PI: "Piauí", RJ: "Rio de Janeiro", RN: "Rio Grande do Norte", RS: "Rio Grande do Sul", RO: "Rondônia", RR: "Roraima", SC: "Santa Catarina", SP: "São Paulo", SE: "Sergipe", TO: "Tocantins" };
+const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+const STATUS = { contatado: "Contatado", interessado: "Interessado", cliente: "Virou cliente", descartado: "Sem interesse" };
+const MINUSCULAS = new Set(["DA", "DE", "DO", "DAS", "DOS", "E", "DI", "DU"]);
+const SIGLAS = new Set(["LTDA", "ME", "EPP", "EIRELI", "S/A", "SA", "CE", "PI", "RN", "PB", "PE", "MEI", "II", "III", "IV", "CIA", "EI", "SLU"]);
+
+function titulo(s) {
+  return String(s || "").toLowerCase().split(/(\s+)/).map((p, i) => {
+    const u = p.toUpperCase();
+    if (/^\s+$/.test(p) || !p) return p;
+    if (SIGLAS.has(u)) return u;
+    if (i > 0 && MINUSCULAS.has(u)) return p;
+    return p.replace(/\p{L}/u, (c) => c.toUpperCase());
+  }).join("");
+}
+
+async function api(caminho, opcoes) {
+  const r = await fetch(caminho, opcoes);
+  if (!r.ok) {
+    let msg = r.statusText;
+    try { msg = (await r.json()).detail || msg; } catch (_) {}
+    throw new Error(msg);
+  }
+  return r.json();
+}
+
+let avisoTimer;
+function aviso(texto, ms = 3200) {
+  const el = $("#aviso");
+  el.textContent = texto;
+  el.hidden = false;
+  clearTimeout(avisoTimer);
+  avisoTimer = setTimeout(() => (el.hidden = true), ms);
+}
+
+// ------------------------------------------------------------------ Estado
+const PADRAO = {
+  texto: "", municipio: [], bairro: [], cnae: [], cnae_secundario: false, tipo: "MEI",
+  situacao: ["2"], aberto_de: "", aberto_ate: "", excluido_de: "", excluido_ate: "",
+  contato: [], acompanhamento: "", ordem: "recentes",
+};
+const CHAVE_LOCAL = "prospecta-mei-filtros-v1";
+let filtros = carregarFiltros();
+let pagina = 1;
+let porPagina = 50;
+let info = {};
+let dataBase = null;
+let ultimaBusca = 0;
+
+function carregarFiltros() {
+  try { return { ...PADRAO, ...JSON.parse(localStorage.getItem(CHAVE_LOCAL) || "{}") }; } catch (_) { return { ...PADRAO }; }
+}
+function guardarFiltros() {
+  try { localStorage.setItem(CHAVE_LOCAL, JSON.stringify(filtros)); } catch (_) {}
+}
+
+function parametros(extra = {}) {
+  const p = new URLSearchParams();
+  if (filtros.texto) p.set("texto", filtros.texto);
+  filtros.municipio.forEach((m) => p.append("municipio", m.valor));
+  filtros.bairro.forEach((b) => p.append("bairro", b.valor));
+  filtros.cnae.forEach((c) => p.append("cnae", c.valor));
+  if (filtros.cnae_secundario) p.set("cnae_secundario", "1");
+  if (filtros.tipo) p.set("tipo", filtros.tipo);
+  filtros.situacao.forEach((s) => p.append("situacao", s));
+  filtros.contato.forEach((c) => p.append("contato", c));
+  for (const k of ["aberto_de", "aberto_ate", "excluido_de", "excluido_ate", "acompanhamento", "ordem"]) {
+    if (filtros[k]) p.set(k, filtros[k]);
+  }
+  for (const [k, v] of Object.entries(extra)) p.set(k, v);
+  return p;
+}
+
+// ------------------------------------------------------------------ Seletor com etiquetas
+function criarSeletor({ raiz, id, placeholder, buscar, chave, aoMudar }) {
+  raiz.innerHTML = `<div class="seletor-caixa"><input id="${id}" type="text" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="${id}-lista" placeholder="${esc(placeholder)}"></div><ul class="lista-opcoes" id="${id}-lista" role="listbox" hidden></ul>`;
+  const caixa = $(".seletor-caixa", raiz), input = $("input", raiz), lista = $("ul", raiz);
+  let opcoes = [], ativo = -1, desligado = false, pedido = 0;
+
+  function etiquetas() {
+    $$(".etiqueta", caixa).forEach((e) => e.remove());
+    filtros[chave].forEach((sel, i) => {
+      const e = document.createElement("span");
+      e.className = "etiqueta";
+      e.innerHTML = `<span title="${esc(sel.rotulo)}">${esc(sel.rotulo)}</span><button type="button" aria-label="Remover ${esc(sel.rotulo)}">×</button>`;
+      $("button", e).onclick = (ev) => { ev.stopPropagation(); filtros[chave].splice(i, 1); etiquetas(); aoMudar(); };
+      caixa.insertBefore(e, input);
+    });
+    input.placeholder = filtros[chave].length ? "Adicionar outro…" : placeholder;
+  }
+  function fechar() { lista.hidden = true; input.setAttribute("aria-expanded", "false"); ativo = -1; }
+  function desenhar() {
+    const escolhidos = new Set(filtros[chave].map((s) => s.valor));
+    const visiveis = opcoes.filter((o) => !escolhidos.has(o.valor));
+    lista.innerHTML = visiveis.length
+      ? visiveis.map((o, i) => `<li role="option" id="${id}-op-${i}" data-i="${i}" aria-selected="${i === ativo}"><span>${esc(o.rotulo)}</span><small>${o.total != null ? fmtNum(o.total) : ""}</small></li>`).join("")
+      : `<li class="sem-opcao">Nada encontrado</li>`;
+    lista._visiveis = visiveis;
+    lista.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+    if (ativo >= 0) input.setAttribute("aria-activedescendant", `${id}-op-${ativo}`);
+  }
+  async function atualizar() {
+    if (desligado) return;
+    const meu = ++pedido;
+    const r = await buscar(input.value.trim());
+    if (meu !== pedido) return;
+    opcoes = r;
+    ativo = -1;
+    desenhar();
+  }
+  function escolher(o) {
+    filtros[chave].push({ valor: o.valor, rotulo: o.rotulo });
+    input.value = "";
+    etiquetas();
+    fechar();
+    aoMudar();
+    input.focus();
+  }
+  let t;
+  input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(atualizar, 180); });
+  input.addEventListener("focus", atualizar);
+  input.addEventListener("keydown", (e) => {
+    const vis = lista._visiveis || [];
+    if (e.key === "ArrowDown") { e.preventDefault(); if (lista.hidden) return atualizar(); ativo = Math.min(vis.length - 1, ativo + 1); desenhar(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); ativo = Math.max(0, ativo - 1); desenhar(); }
+    else if (e.key === "Enter") { e.preventDefault(); if (vis[ativo >= 0 ? ativo : 0]) escolher(vis[ativo >= 0 ? ativo : 0]); }
+    else if (e.key === "Escape") fechar();
+    else if (e.key === "Backspace" && !input.value && filtros[chave].length) { filtros[chave].pop(); etiquetas(); aoMudar(); }
+  });
+  lista.addEventListener("mousedown", (e) => {
+    const li = e.target.closest("li[data-i]");
+    if (li) { e.preventDefault(); escolher(lista._visiveis[+li.dataset.i]); }
+  });
+  input.addEventListener("blur", () => setTimeout(fechar, 120));
+  caixa.addEventListener("click", () => input.focus());
+  return {
+    etiquetas,
+    desligar(sim, motivo) {
+      desligado = sim;
+      raiz.classList.toggle("desligado", sim);
+      input.disabled = sim;
+      input.placeholder = sim ? motivo : placeholder;
+      if (!sim) etiquetas();
+    },
+  };
+}
+
+let municipios = [];
+let bairrosCache = { chave: "", lista: [] };
+
+async function listaBairros() {
+  const chave = filtros.municipio.map((m) => m.valor).sort().join(",");
+  if (bairrosCache.chave !== chave) {
+    const p = new URLSearchParams();
+    filtros.municipio.forEach((m) => p.append("municipio", m.valor));
+    const r = await api("/api/bairros?" + p);
+    bairrosCache = { chave, lista: r.map((b) => ({ valor: b.chave, rotulo: titulo(b.nome), total: b.total, busca: semAcento(b.nome) })) };
+  }
+  return bairrosCache.lista;
+}
+
+const seletores = {};
+function montarSeletores() {
+  seletores.municipio = criarSeletor({
+    raiz: $("#sel-municipio"), id: "f-municipio-input", placeholder: "Todo o estado", chave: "municipio",
+    buscar: async (q) => {
+      const n = semAcento(q);
+      return municipios.filter((m) => !n || m.busca.includes(n)).slice(0, 80);
+    },
+    aoMudar: () => {
+      if (!filtros.municipio.length) filtros.bairro = [];
+      atualizarBairroLigado();
+      mudou();
+    },
+  });
+  seletores.bairro = criarSeletor({
+    raiz: $("#sel-bairro"), id: "f-bairro-input", placeholder: "Todos os bairros", chave: "bairro",
+    buscar: async (q) => {
+      const n = semAcento(q);
+      return (await listaBairros()).filter((b) => !n || b.busca.includes(n)).slice(0, 120);
+    },
+    aoMudar: mudou,
+  });
+  seletores.cnae = criarSeletor({
+    raiz: $("#sel-cnae"), id: "f-cnae-input", placeholder: "Ex.: cabeleireiro, lanchonete, 4781", chave: "cnae",
+    buscar: async (q) => (await api("/api/cnaes?q=" + encodeURIComponent(q))).map((c) => ({ valor: c.codigo, rotulo: c.descricao, total: c.total })),
+    aoMudar: mudou,
+  });
+}
+function atualizarBairroLigado() {
+  seletores.bairro.desligar(!filtros.municipio.length, "Escolha um município primeiro");
+}
+
+// ------------------------------------------------------------------ Formulário
+function preencherFormulario() {
+  $("#f-texto").value = filtros.texto;
+  $("#f-secundario").checked = filtros.cnae_secundario;
+  $$('input[name="tipo"]').forEach((r) => (r.checked = r.value === filtros.tipo));
+  $$('input[name="situacao"]').forEach((c) => (c.checked = filtros.situacao.includes(c.value)));
+  $$('input[name="contato"]').forEach((c) => (c.checked = filtros.contato.includes(c.value)));
+  $("#f-aberto-de").value = filtros.aberto_de;
+  $("#f-aberto-ate").value = filtros.aberto_ate;
+  $("#f-excl-de").value = filtros.excluido_de;
+  $("#f-excl-ate").value = filtros.excluido_ate;
+  $("#f-acomp").value = filtros.acompanhamento;
+  $("#ordem").value = filtros.ordem;
+  Object.values(seletores).forEach((s) => s.etiquetas());
+  atualizarBairroLigado();
+  ajustarTipo();
+}
+function ajustarTipo() {
+  $("#grupo-desenq").hidden = filtros.tipo === "MEI";
+  $("#dica-tipo").textContent = {
+    MEI: "Quem é MEI hoje.",
+    "EX-MEI": "Quem já foi MEI e saiu do regime. Se continua ativa, agora precisa de contabilidade.",
+    "": "MEIs e ex-MEIs juntos.",
+  }[filtros.tipo];
+}
+function lerFormulario() {
+  filtros.texto = $("#f-texto").value.trim();
+  filtros.cnae_secundario = $("#f-secundario").checked;
+  filtros.tipo = ($('input[name="tipo"]:checked') || {}).value ?? "MEI";
+  filtros.situacao = $$('input[name="situacao"]:checked').map((c) => c.value);
+  filtros.contato = $$('input[name="contato"]:checked').map((c) => c.value);
+  filtros.aberto_de = $("#f-aberto-de").value;
+  filtros.aberto_ate = $("#f-aberto-ate").value;
+  filtros.excluido_de = $("#f-excl-de").value;
+  filtros.excluido_ate = $("#f-excl-ate").value;
+  filtros.acompanhamento = $("#f-acomp").value;
+  filtros.ordem = $("#ordem").value;
+  if (filtros.tipo === "MEI") { filtros.excluido_de = ""; filtros.excluido_ate = ""; }
+  ajustarTipo();
+}
+
+let buscaTimer;
+function mudou(imediato = false) {
+  pagina = 1;
+  guardarFiltros();
+  marcarAtalho();
+  clearTimeout(buscaTimer);
+  buscaTimer = setTimeout(() => { buscar(); carregarPanorama(); }, imediato ? 0 : 300);
+}
+
+// ------------------------------------------------------------------ Atalhos
+function menosDias(dias) {
+  const d = new Date((dataBase || new Date().toISOString().slice(0, 10)) + "T12:00:00");
+  d.setDate(d.getDate() - dias);
+  return d.toISOString().slice(0, 10);
+}
+const ATALHOS = [
+  {
+    id: "novos", rotulo: "Abertos nos últimos 30 dias",
+    explica: "MEIs recém-abertos e ativos. É quando o empreendedor ainda está organizando a parte fiscal.",
+    filtros: () => ({ tipo: "MEI", situacao: ["2"], aberto_de: menosDias(30), ordem: "recentes" }),
+  },
+  {
+    id: "desenquadrados", rotulo: "Saíram do MEI no último ano",
+    explica: "Empresas que deixaram o MEI e continuam ativas. Viraram microempresa e precisam de contador.",
+    filtros: () => ({ tipo: "EX-MEI", situacao: ["2"], excluido_de: menosDias(365), ordem: "desenquadramento" }),
+  },
+  {
+    id: "inaptos", rotulo: "MEIs com pendências",
+    explica: "MEIs com situação inapta na Receita, em geral por declarações não entregues. Precisam regularizar.",
+    filtros: () => ({ tipo: "MEI", situacao: ["4"], ordem: "recentes" }),
+  },
+  {
+    id: "zap", rotulo: "Ativos com WhatsApp e ainda não contatados",
+    explica: "MEIs ativos com celular cadastrado que você ainda não marcou como contatados.",
+    filtros: () => ({ tipo: "MEI", situacao: ["2"], contato: ["celular"], acompanhamento: "nao_contatado", ordem: "recentes" }),
+  },
+];
+const CAMPOS_ATALHO = ["tipo", "situacao", "aberto_de", "aberto_ate", "excluido_de", "excluido_ate", "contato", "acompanhamento"];
+
+function montarAtalhos() {
+  $("#atalhos").innerHTML = ATALHOS.map((a) => `<button type="button" class="atalho" data-id="${a.id}" aria-pressed="false">${esc(a.rotulo)}</button>`).join("");
+  $("#atalhos").onclick = (e) => {
+    const b = e.target.closest(".atalho");
+    if (!b) return;
+    const a = ATALHOS.find((x) => x.id === b.dataset.id);
+    const base = { ...PADRAO };
+    // Mantém local, atividade e busca por nome; troca o restante.
+    filtros = { ...filtros, ...Object.fromEntries(CAMPOS_ATALHO.map((k) => [k, base[k]])), ...a.filtros() };
+    preencherFormulario();
+    mudou(true);
+  };
+}
+function marcarAtalho() {
+  let achou = null;
+  for (const a of ATALHOS) {
+    const alvo = { ...Object.fromEntries(CAMPOS_ATALHO.map((k) => [k, PADRAO[k]])), ...a.filtros() };
+    const igual = CAMPOS_ATALHO.every((k) => JSON.stringify(alvo[k]) === JSON.stringify(filtros[k]));
+    if (igual) achou = a;
+  }
+  $$(".atalho").forEach((b) => b.setAttribute("aria-pressed", String(achou?.id === b.dataset.id)));
+  $("#atalho-explica").textContent = achou ? achou.explica : "";
+}
+
+// ------------------------------------------------------------------ Resultados
+function diasAte(iso) {
+  if (!iso) return null;
+  const hoje = new Date();
+  hoje.setHours(12, 0, 0, 0);
+  return Math.round((hoje - new Date(iso + "T12:00:00")) / 86400000);
+}
+function sinais(it) {
+  const s = [];
+  const d = diasAte(it.data_inicio);
+  if (it.tipo === "MEI" && d !== null && d >= 0 && d <= 90) s.push(d === 0 ? "Aberta hoje" : d === 1 ? "Aberta ontem" : `Aberta há ${d} dias`);
+  if (it.tipo === "EX-MEI" && it.data_exclusao_mei) {
+    const de = diasAte(it.data_exclusao_mei);
+    s.push(`${de !== null && de <= 365 ? "Saiu do MEI em" : "Ex-MEI desde"} ${fmtData(it.data_exclusao_mei).slice(3)}`);
+  }
+  if (it.situacao_cod === 4) s.push("Inapta");
+  if (it.situacao_cod === 3) s.push("Suspensa");
+  return s.map((x) => `<mark>${esc(x)}</mark>`).join("");
+}
+const ICONE_ZAP = `<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.4 18.8z" stroke-linejoin="round"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-1.8-1.8l.8-1-1-2z" fill="currentColor" stroke="none"/></svg>`;
+
+function contato(it) {
+  const tels = it.telefones.map((t) => t.whatsapp
+    ? `<a href="https://wa.me/${t.whatsapp}" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp">${ICONE_ZAP}${esc(t.numero)}</a>`
+    : `<span class="tel">${esc(t.numero)}</span>`).join("");
+  const email = it.email ? `<a class="email" href="mailto:${esc(it.email)}" title="${esc(it.email)}">${esc(it.email)}</a>` : "";
+  return tels + email || `<span class="vazio">Sem contato</span>`;
+}
+function linha(it) {
+  return `<tr data-cnpj="${esc(it.cnpj)}" tabindex="0">
+    <td class="c-empresa"><span class="nome">${esc(titulo(it.razao_social))}</span>${it.nome_fantasia ? `<span class="fantasia">${esc(titulo(it.nome_fantasia))}</span>` : ""}<span class="cnpj">${esc(it.cnpj_fmt)}</span></td>
+    <td class="c-atividade"><span title="${esc(it.cnae_descricao)}">${esc(it.cnae_descricao)}</span></td>
+    <td class="c-local">${esc(titulo(it.bairro)) || '<span class="vazio">Sem bairro</span>'}<span class="mun">${esc(titulo(it.municipio))}</span></td>
+    <td class="c-data">${fmtData(it.data_inicio)}${sinais(it)}</td>
+    <td class="c-contato">${contato(it)}</td>
+    <td class="c-status">${it.status ? `<span class="status s-${esc(it.status)}">${STATUS[it.status]}</span>` : ""}</td>
+  </tr>`;
+}
+
+let itensPagina = [];
+async function buscar() {
+  const meu = ++ultimaBusca;
+  $("#principal").classList.add("carregando");
+  try {
+    const r = await api("/api/buscar?" + parametros({ pagina, por_pagina: porPagina }));
+    if (meu !== ultimaBusca) return;
+    itensPagina = r.itens;
+    $("#total").textContent = fmtNum(r.total);
+    $("#total-rotulo").textContent = r.total === 1 ? "empresa" : "empresas";
+    $("#linhas").innerHTML = r.itens.map(linha).join("");
+    $("#sem-resultado").hidden = r.total > 0;
+    $(".tabela-envolve").hidden = r.total === 0;
+    paginacao(r.total);
+    $("#exp-xlsx").disabled = $("#exp-csv").disabled = r.total === 0;
+    $("#exp-xlsx").dataset.total = r.total;
+  } catch (e) {
+    if (meu === ultimaBusca) aviso("Não foi possível buscar: " + e.message, 6000);
+  } finally {
+    if (meu === ultimaBusca) $("#principal").classList.remove("carregando");
+  }
+}
+function paginacao(total) {
+  const paginas = Math.max(1, Math.ceil(total / porPagina));
+  const nav = $("#paginacao");
+  if (paginas === 1) { nav.innerHTML = ""; return; }
+  nav.innerHTML = `<button class="btn btn-sec" data-p="${pagina - 1}" ${pagina <= 1 ? "disabled" : ""}>Anterior</button>
+    <span>Página ${fmtNum(pagina)} de ${fmtNum(paginas)}</span>
+    <button class="btn btn-sec" data-p="${pagina + 1}" ${pagina >= paginas ? "disabled" : ""}>Próxima</button>`;
+}
+$("#paginacao").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-p]");
+  if (!b || b.disabled) return;
+  pagina = +b.dataset.p;
+  buscar();
+  $(".barra-resultado").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+// Panorama
+let panoramaVisivel = (() => { try { return localStorage.getItem("prospecta-panorama") !== "0"; } catch (_) { return true; } })();
+async function carregarPanorama() {
+  $("#panorama").hidden = !panoramaVisivel;
+  $("#alternar-panorama").textContent = panoramaVisivel ? "Ocultar panorama" : "Mostrar panorama";
+  $("#alternar-panorama").setAttribute("aria-expanded", String(panoramaVisivel));
+  if (!panoramaVisivel) return;
+  const meu = ultimaBusca;
+  let r;
+  try { r = await api("/api/resumo?" + parametros()); } catch (_) { return; }
+  if (meu !== ultimaBusca) return;
+  const porBairro = filtros.municipio.length > 0;
+  const local = porBairro ? r.bairros : r.municipios;
+  $("#pan-local-titulo").textContent = porBairro ? "Bairros com mais empresas" : "Municípios com mais empresas";
+  const barras = (lista, tipo) => {
+    const max = Math.max(1, ...lista.map((x) => x.total));
+    return lista.length ? lista.map((x) => `<li><button type="button" data-tipo="${tipo}" data-chave="${esc(x.chave)}" data-nome="${esc(x.nome)}" style="--p:${(x.total / max) * 100}%" title="Filtrar por ${esc(x.nome)}"><span>${esc(tipo === "atividade" ? x.nome : titulo(x.nome))}</span><small>${fmtNum(x.total)}</small></button></li>`).join("") : `<li class="vazio">Sem dados</li>`;
+  };
+  $("#pan-local").innerHTML = barras(local, porBairro ? "bairro" : "municipio");
+  $("#pan-atividade").innerHTML = barras(r.atividades, "atividade");
+  const c = r.contagens, tot = Math.max(1, c.total || 0);
+  const medida = (rot, n) => `<div><span>${rot}</span><strong>${Math.round(((n || 0) / tot) * 100)}%</strong><span class="trilho"><i style="width:${((n || 0) / tot) * 100}%"></i></span></div>`;
+  $("#pan-contato").innerHTML = medida("Com celular", c.celular) + medida("Com e-mail", c.email);
+}
+$("#panorama").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-tipo]");
+  if (!b) return;
+  const { tipo, chave, nome } = b.dataset;
+  if (tipo === "municipio" && !filtros.municipio.some((m) => m.valor === chave)) {
+    filtros.municipio.push({ valor: chave, rotulo: titulo(nome) });
+  } else if (tipo === "bairro") {
+    const [mun, bairro] = chave.split("|");
+    const rotulo = titulo(nome.replace(/\s*\([^)]*\)$/, ""));
+    if (!filtros.bairro.some((x) => x.valor === bairro)) filtros.bairro.push({ valor: bairro, rotulo });
+    if (!filtros.municipio.some((m) => m.valor === mun)) {
+      const m = municipios.find((x) => x.valor === mun);
+      if (m) filtros.municipio.push({ valor: m.valor, rotulo: m.rotulo });
+    }
+  } else if (tipo === "atividade" && !filtros.cnae.some((x) => x.valor === chave)) {
+    filtros.cnae.push({ valor: chave, rotulo: nome });
+  }
+  preencherFormulario();
+  mudou(true);
+});
+$("#alternar-panorama").onclick = () => {
+  panoramaVisivel = !panoramaVisivel;
+  try { localStorage.setItem("prospecta-panorama", panoramaVisivel ? "1" : "0"); } catch (_) {}
+  carregarPanorama();
+};
+
+// ------------------------------------------------------------------ Ficha
+let fichaAtual = null;
+function campo(rotulo, valor, classe = "") {
+  return `<div class="c ${classe}"><small>${rotulo}</small><span>${valor || "—"}</span></div>`;
+}
+async function abrirFicha(cnpj) {
+  let d;
+  try { d = await api("/api/empresa/" + encodeURIComponent(cnpj)); } catch (e) { aviso(e.message); return; }
+  fichaAtual = d;
+  $$("#linhas tr").forEach((tr) => tr.classList.toggle("aberta", tr.dataset.cnpj === cnpj));
+  $("#ficha-nome").textContent = titulo(d.razao_social);
+  $("#ficha-sub").textContent = [d.nome_fantasia && titulo(d.nome_fantasia), d.tipo === "MEI" ? "MEI" : "Ex-MEI"].filter(Boolean).join(", ");
+  const zap = d.telefones.find((t) => t.whatsapp);
+  const local = [d.endereco, d.bairro, `${d.municipio} - ${d.uf}`, d.cep].filter(Boolean).join(", ");
+  const mapa = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(local);
+  const tels = d.telefones.map((t) => esc(t.numero)).join("<br>");
+  const secs = d.secundarias.length ? `<ul>${d.secundarias.map((s) => `<li>${esc(s.codigo)} ${esc(s.descricao)}</li>`).join("")}</ul>` : "";
+  $("#ficha-corpo").innerHTML = `
+    <div class="ficha-acoes">
+      ${zap ? `<a class="btn" href="https://wa.me/${zap.whatsapp}" target="_blank" rel="noopener">${ICONE_ZAP} Abrir WhatsApp</a>` : ""}
+      ${d.email ? `<a class="btn btn-sec" href="mailto:${esc(d.email)}">Enviar e-mail</a>` : ""}
+      <a class="btn btn-sec" href="${mapa}" target="_blank" rel="noopener">Ver no mapa</a>
+      <button class="btn btn-sec" type="button" data-copiar="${esc(d.cnpj_fmt)}">Copiar CNPJ</button>
+    </div>
+    <div class="cartao">
+      <div class="titulo-cartao">Ficha cadastral</div>
+      ${campo("Número de inscrição", esc(d.cnpj_fmt), "s4")}
+      ${campo("Data de abertura", fmtData(d.data_inicio), "s2")}
+      ${campo("Nome empresarial", esc(titulo(d.razao_social)))}
+      ${campo("Nome fantasia", esc(titulo(d.nome_fantasia)), "s4")}
+      ${campo("Porte", esc(d.porte), "s2")}
+      ${campo("Atividade principal", `${esc(d.cnae_principal || "")} ${esc(d.cnae_descricao)}`)}
+      ${campo("Atividades secundárias", secs)}
+      ${campo("Natureza jurídica", esc(d.natureza))}
+      ${campo("Logradouro", esc(titulo(d.endereco)), "s4")}
+      ${campo("CEP", esc(d.cep), "s2")}
+      ${campo("Bairro", esc(titulo(d.bairro)), "s2")}
+      ${campo("Município", esc(titulo(d.municipio)), "s3")}
+      ${campo("UF", esc(d.uf), "s1")}
+      ${campo("Telefone", tels, "s3")}
+      ${campo("E-mail", esc(d.email), "s3")}
+      ${campo("Situação cadastral", esc(d.situacao), "s3")}
+      ${campo("Data da situação", fmtData(d.data_situacao), "s3")}
+      ${campo("Opção pelo MEI", fmtData(d.data_opcao_mei), "s3")}
+      ${campo("Saída do MEI", fmtData(d.data_exclusao_mei), "s3")}
+    </div>
+    <section class="acompanhamento">
+      <h3>Seu acompanhamento</h3>
+      <p class="dica">Fica guardado neste computador e continua valendo quando a base for atualizada.</p>
+      <div class="status-opcoes" role="group" aria-label="Status do contato">
+        ${Object.entries(STATUS).map(([k, v]) => `<button type="button" data-status="${k}" aria-pressed="${d.status === k}">${v}</button>`).join("")}
+      </div>
+      <label for="nota" class="sr">Anotações</label>
+      <textarea id="nota" placeholder="Anotações: com quem falou, o que combinou, quando retornar…">${esc(d.nota)}</textarea>
+      <div style="margin-top:8px;display:flex;align-items:center">
+        <button class="btn btn-sec" type="button" id="salvar-nota">Salvar anotação</button>
+        <span class="salvo" id="salvo">${d.acompanhamento_atualizado ? "Última alteração em " + fmtData(d.acompanhamento_atualizado) : ""}</span>
+      </div>
+    </section>`;
+  $("#ficha").hidden = false;
+  $("#fundo-ficha").hidden = false;
+  $("#fechar-ficha").focus();
+}
+function fecharFicha() {
+  $("#ficha").hidden = true;
+  $("#fundo-ficha").hidden = true;
+  const tr = $(`#linhas tr[data-cnpj="${CSS.escape(fichaAtual?.cnpj || "")}"]`);
+  $$("#linhas tr").forEach((t) => t.classList.remove("aberta"));
+  if (tr) tr.focus();
+  fichaAtual = null;
+}
+async function salvarAcompanhamento(status) {
+  if (!fichaAtual) return;
+  const nota = $("#nota").value;
+  try {
+    const r = await api("/api/acompanhamento/" + encodeURIComponent(fichaAtual.cnpj), {
+      method: "PUT", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status, nota, razao_social: fichaAtual.razao_social }),
+    });
+    fichaAtual.status = r.status;
+    fichaAtual.nota = r.nota;
+    $$(".status-opcoes button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.status === r.status)));
+    $("#salvo").textContent = "Salvo agora";
+    const it = itensPagina.find((x) => x.cnpj === fichaAtual.cnpj);
+    if (it) {
+      it.status = r.status;
+      const tr = $(`#linhas tr[data-cnpj="${CSS.escape(it.cnpj)}"]`);
+      if (tr) { tr.outerHTML = linha(it); $(`#linhas tr[data-cnpj="${CSS.escape(it.cnpj)}"]`).classList.add("aberta"); }
+    }
+  } catch (e) { aviso("Não foi possível salvar: " + e.message, 5000); }
+}
+$("#ficha-corpo").addEventListener("click", (e) => {
+  const st = e.target.closest("button[data-status]");
+  if (st) salvarAcompanhamento(st.getAttribute("aria-pressed") === "true" ? null : st.dataset.status);
+  if (e.target.closest("#salvar-nota")) salvarAcompanhamento(fichaAtual.status);
+  const cp = e.target.closest("[data-copiar]");
+  if (cp) navigator.clipboard?.writeText(cp.dataset.copiar).then(() => aviso("CNPJ copiado"));
+});
+$("#fechar-ficha").onclick = fecharFicha;
+$("#fundo-ficha").onclick = fecharFicha;
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#ficha").hidden) fecharFicha(); });
+$("#linhas").addEventListener("click", (e) => {
+  if (e.target.closest("a")) return;
+  const tr = e.target.closest("tr[data-cnpj]");
+  if (tr) abrirFicha(tr.dataset.cnpj);
+});
+$("#linhas").addEventListener("keydown", (e) => {
+  const tr = e.target.closest("tr[data-cnpj]");
+  if (tr && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); abrirFicha(tr.dataset.cnpj); }
+});
+
+// ------------------------------------------------------------------ Exportar
+let exportando = false;
+async function exportar(formato) {
+  if (exportando) return;
+  const total = +($("#exp-xlsx").dataset.total || 0);
+  if (formato === "xlsx" && total > 200000 &&
+      !confirm(`A planilha Excel vai levar as primeiras 200.000 de ${fmtNum(total)} empresas. Para levar todas, use “Baixar CSV”. Continuar?`)) return;
+  const botao = $(formato === "xlsx" ? "#exp-xlsx" : "#exp-csv");
+  const texto = botao.textContent;
+  exportando = true;
+  botao.disabled = true;
+  botao.textContent = total > 20000 ? "Gerando… pode levar até 1 minuto" : "Gerando…";
+  try {
+    const r = await fetch("/api/exportar?" + parametros({ formato }));
+    if (!r.ok) throw new Error(r.statusText);
+    const nome = (r.headers.get("Content-Disposition") || "").match(/filename="([^"]+)"/)?.[1] || `meis.${formato}`;
+    const url = URL.createObjectURL(await r.blob());
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = nome;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    aviso(`Arquivo ${nome} baixado. Ele fica na pasta Downloads.`, 5000);
+  } catch (e) {
+    aviso("Não foi possível gerar o arquivo: " + e.message, 6000);
+  } finally {
+    exportando = false;
+    botao.disabled = false;
+    botao.textContent = texto;
+  }
+}
+$("#exp-xlsx").onclick = () => exportar("xlsx");
+$("#exp-csv").onclick = () => exportar("csv");
+
+// ------------------------------------------------------------------ Atualização da base
+let pollTimer = null;
+function desenharProgresso(alvo, st) {
+  if (!st || st.status === "parado") { alvo.hidden = true; return; }
+  alvo.hidden = false;
+  const pct = Math.round(st.percentual || 0);
+  const erro = st.status === "erro";
+  const ok = st.status === "concluido" || st.status === "atualizado";
+  if (ok && !verificarAtualizacao.estavaRodando) {
+    alvo.innerHTML = `<div class="detalhe">Última atualização em ${fmtData(st.atualizado_em)}: ${esc(st.mensagem)}</div>`;
+    return;
+  }
+  alvo.innerHTML = `
+    <div class="linha"><strong>${esc(ok ? "Concluído" : erro ? "A atualização parou" : st.etapa || "Atualizando")}</strong><span>${erro ? "" : pct + "%"}</span></div>
+    <div class="trilho" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${erro ? 0 : pct}%"></i></div>
+    <div class="detalhe ${erro ? "erro" : ""}">${esc(erro || ok ? st.mensagem : st.detalhe || st.mensagem || "")}</div>
+    ${st.log?.length ? `<details><summary>Ver registro</summary><pre>${esc(st.log.join("\n"))}</pre></details>` : ""}`;
+}
+async function verificarAtualizacao() {
+  let st;
+  try { st = await api("/api/atualizacao"); } catch (_) { return; }
+  const rodando = st.status === "executando";
+  $("#andamento-topo").hidden = !rodando || !info.mes_referencia;
+  if (rodando) {
+    $("#andamento-texto").textContent = `Atualizando base: ${Math.round(st.percentual || 0)}%`;
+    $("#andamento-barra").style.width = (st.percentual || 0) + "%";
+  }
+  if ($("#dlg-atualizar").open) {
+    desenharProgresso($("#progresso-dlg"), st);
+    $("#dlg-iniciar").hidden = rodando;
+    $("#dlg-iniciar").textContent = st.status === "erro" ? "Continuar atualização" : "Buscar base mais recente";
+  }
+  if (!$("#tela-inicial").hidden) {
+    desenharProgresso($("#progresso-inicial"), st);
+    $("#btn-baixar-inicial").hidden = rodando;
+    $("#btn-baixar-inicial").textContent = st.status === "erro" ? "Tentar de novo" : "Baixar base agora";
+  }
+  clearTimeout(pollTimer);
+  if (rodando) pollTimer = setTimeout(verificarAtualizacao, 2000);
+  else if (st.status === "concluido" && verificarAtualizacao.estavaRodando) {
+    aviso("Base atualizada. Recarregando…");
+    setTimeout(() => location.reload(), 1200);
+  }
+  verificarAtualizacao.estavaRodando = rodando;
+}
+async function iniciarAtualizacao() {
+  try {
+    const r = await api("/api/atualizacao", { method: "POST" });
+    if (!r.ok) aviso(r.mensagem);
+  } catch (e) { aviso("Não foi possível iniciar: " + e.message, 6000); }
+  verificarAtualizacao();
+}
+$("#btn-atualizar").onclick = () => {
+  const mes = info.mes_referencia;
+  $("#dlg-texto").textContent = mes
+    ? `A base atual é de ${nomeMes(mes)}. O sistema confere se a Receita já publicou uma mais nova e, se houver, baixa e substitui. Você pode continuar usando o sistema enquanto isso.`
+    : "O sistema baixa a base mais recente da Receita Federal.";
+  $("#dlg-atualizar").showModal();
+  verificarAtualizacao();
+};
+$("#andamento-topo").onclick = () => $("#btn-atualizar").click();
+$("#dlg-fechar").onclick = () => $("#dlg-atualizar").close();
+$("#dlg-iniciar").onclick = iniciarAtualizacao;
+$("#btn-baixar-inicial").onclick = iniciarAtualizacao;
+
+function nomeMes(mes) {
+  const [a, m] = (mes || "").split("-");
+  return m ? `${MESES[+m - 1]} de ${a}` : mes;
+}
+
+// ------------------------------------------------------------------ Início
+$("#limpar").onclick = () => {
+  filtros = { ...PADRAO, municipio: [], bairro: [], cnae: [], situacao: ["2"], contato: [] };
+  preencherFormulario();
+  mudou(true);
+};
+$("#form").addEventListener("change", (e) => { if (e.target.id !== "f-texto" && !e.target.closest(".seletor")) { lerFormulario(); mudou(); } });
+$("#f-texto").addEventListener("input", () => { lerFormulario(); mudou(); });
+$("#ordem").addEventListener("change", () => { lerFormulario(); mudou(true); });
+$("#alternar-filtros").onclick = () => {
+  const painel = $("#painel-filtros");
+  const recolhido = painel.classList.toggle("recolhido");
+  $("#alternar-filtros").textContent = recolhido ? "Mostrar filtros" : "Ocultar filtros";
+  $("#alternar-filtros").setAttribute("aria-expanded", String(!recolhido));
+};
+
+async function iniciar() {
+  let est;
+  try { est = await api("/api/estado"); } catch (e) {
+    $("#resumo-base").textContent = "O servidor não respondeu. Feche e abra o sistema de novo.";
+    return;
+  }
+  info = est.info || {};
+  if (!est.base_pronta) {
+    $("#resumo-base").textContent = "Base ainda não baixada";
+    $("#tela-inicial").hidden = false;
+    $("#btn-atualizar").hidden = true;
+    verificarAtualizacao();
+    return;
+  }
+  dataBase = info.data_mais_recente || null;
+  const ufs = (info.ufs || "").split(",").filter(Boolean).map((u) => UFS[u] || u);
+  $("#resumo-base").textContent = info.fonte === "demonstração"
+    ? `Dados fictícios de demonstração (${fmtNum(info.total)} empresas). Clique em “Atualizar base” para baixar a base real.`
+    : `${fmtNum(info.total)} MEIs e ex-MEIs ${ufs.length === 1 ? "do " + ufs[0] : "de " + ufs.join(", ")}. Base da Receita de ${nomeMes(info.mes_referencia)}.`;
+  $("#tela-principal").hidden = false;
+  const op = await api("/api/opcoes");
+  municipios = op.municipios.map((m) => ({ valor: m.codigo, rotulo: titulo(m.nome) + (ufs.length > 1 ? ` (${m.uf})` : ""), total: m.total, busca: semAcento(m.nome) }));
+  montarSeletores();
+  montarAtalhos();
+  preencherFormulario();
+  marcarAtalho();
+  buscar();
+  carregarPanorama();
+  verificarAtualizacao();
+}
+iniciar();
+</script>
+</body>
+</html>
